@@ -6,7 +6,6 @@ public class Wander : MonoBehaviour
 
     private UnityEngine.AI.NavMeshAgent agent; //= GetComponent<UnityEngine.AI.NavMeshAgent>();
     public float wanderRadius;
-    public GameObject navTarget;
 
     // Start is called before the first frame update
     void Start()
@@ -32,9 +31,10 @@ public class Wander : MonoBehaviour
                 {
                     Debug.Log(this + "No path currently" + agent.destination);
                 }
-                Vector3 newPos = ForwardRandomNavSphere(this.transform.position+transform.forward*(wanderRadius/3), wanderRadius, -1, navTarget);
+                Vector3 newPos = ForwardRandomNavSphere(this.transform.position+transform.forward*(wanderRadius/3), wanderRadius, -1);
                 agent.destination = newPos;
                 Debug.Log(this + " changed destination to: " + agent.destination);
+                Debug.DrawRay(agent.destination, Vector3.up*30, Color.blue, 1.0f);
             }
             return;
         }
@@ -49,18 +49,12 @@ public class Wander : MonoBehaviour
     /// <param name="dist"></param>
     /// <param name="layermask"></param>
     /// <returns></returns>
-    public static Vector3 ForwardRandomNavSphere(Vector3 origin, float dist, int layermask, GameObject navtarget)
+    public static Vector3 ForwardRandomNavSphere(Vector3 origin, float dist, int layermask)
     {
-        //navtarget.transform.position = origin;
         Vector3 randDirection = Random.insideUnitSphere * Random.Range(2, dist);
-
         randDirection += origin;
-
         UnityEngine.AI.NavMeshHit navHit;
-
         UnityEngine.AI.NavMesh.SamplePosition(randDirection, out navHit, dist, layermask);
-
-        navtarget.transform.position = navHit.position;
         return navHit.position;
     }
 }
