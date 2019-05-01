@@ -1,32 +1,58 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.AI;
+using UnityEngine;
 
 public class Wander : MonoBehaviour
 {
+
+    private UnityEngine.AI.NavMeshAgent agent; //= GetComponent<UnityEngine.AI.NavMeshAgent>();
+    public float wanderRadius;
+    public GameObject navTarget;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        agent = this.GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (agent == null)
+        {
+            Debug.Log("agent is null, something went wrong");
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 newPos = RandomNavSphere(myAgent.transform.position, wanderRadius, -1);
-        agent.SetDestination(newPos);
+        if (!agent.pathPending)//boolean on whether it has a path to follow
+        {
+
+            if (agent.remainingDistance <= agent.stoppingDistance)//check to see if we should be stopped
+            {
+                Debug.Log(this + "reached destination: "+ agent.destination);
+
+                if (!agent.hasPath)//if you dont have a path, or not moving
+                {
+                    Debug.Log(this + "No path currently" + agent.destination);
+                }
+                Vector3 newPos = ForwardRandomNavSphere(this.transform.position+transform.forward*(wanderRadius/3), wanderRadius, -1, navTarget);
+                agent.destination = newPos;
+                Debug.Log(this + " changed destination to: " + agent.destination);
+            }
+            return;
+        }
+        Debug.Log(this + "pending path" + Time.time);
+        return;
     }
 
     /// <summary>
-    /// find a random point on the layermask provided that is "dist" far away from the origin
+    /// find a random point on the layermask in front of the origin
     /// </summary>
     /// <param name="origin"></param>
     /// <param name="dist"></param>
     /// <param name="layermask"></param>
     /// <returns></returns>
-    public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
+    public static Vector3 ForwardRandomNavSphere(Vector3 origin, float dist, int layermask, GameObject navtarget)
     {
-        Vector3 randDirection = Random.insideUnitSphere * dist;
+        //navtarget.transform.position = origin;
+        Vector3 randDirection = Random.insideUnitSphere * Random.Range(2, dist);
 
         randDirection += origin;
 
@@ -34,6 +60,7 @@ public class Wander : MonoBehaviour
 
         UnityEngine.AI.NavMesh.SamplePosition(randDirection, out navHit, dist, layermask);
 
+        navtarget.transform.position = navHit.position;
         return navHit.position;
     }
 }
