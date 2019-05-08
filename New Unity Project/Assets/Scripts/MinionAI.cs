@@ -96,18 +96,19 @@ public class MinionAI : MonoBehaviour
     }
 
     /// <summary>
-    /// find a random point on the layermask in front of the origin
+    /// find a random point on the layermask in front of the origin, may want to move this into a helper class
+    /// note, placement forward of a transform should be done before passing in the origin
     /// </summary>
     /// <param name="origin"></param>
-    /// <param name="dist"></param>
+    /// <param name="area"></param>
     /// <param name="layermask"></param>
     /// <returns></returns>
-    public static Vector3 ForwardRandomNavSphere(Vector3 origin, float dist, int layermask)
+    public static Vector3 ForwardRandomNavSphere(Vector3 origin, float area, int layermask)
     {
-        Vector3 randDirection = Random.insideUnitSphere * Random.Range(2, dist);
+        Vector3 randDirection = Random.insideUnitSphere * Random.Range(2, area);
         randDirection += origin;
         UnityEngine.AI.NavMeshHit navHit;
-        UnityEngine.AI.NavMesh.SamplePosition(randDirection, out navHit, dist, layermask);
+        UnityEngine.AI.NavMesh.SamplePosition(randDirection, out navHit, area, layermask);
         return navHit.position;
     }
 }
