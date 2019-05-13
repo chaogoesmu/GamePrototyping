@@ -10,6 +10,7 @@ public class CameraControl : MonoBehaviour
     public int HorizontalScroll = 1;
     public int VerticalScroll = 1;
     public int DiagonalScroll = 1;
+    public Camera myCam;
 
     float PanSpeed = 10;
 
@@ -80,11 +81,11 @@ public class CameraControl : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = myCam.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, layerthing))
                 if (hit.collider != null)
                 {
-                    print("hit: " + hit.collider.ToString());
+                    print("hit: " + hit.collider.ToString() + ", " + hit.collider.gameObject);
                 }
         }
     }
