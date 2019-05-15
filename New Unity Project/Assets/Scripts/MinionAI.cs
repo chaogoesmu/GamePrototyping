@@ -12,6 +12,13 @@ public class MinionAI : MonoBehaviour
     private int ActionsLength = 4;
     public float idleTimeMax = 5f;
     public float ifleTimeMin = 15f;
+    public int health;
+    public int maxHealth;
+    public int energy;
+    public int maxEnergy;
+    public float speed;
+    public float energyUsage;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +27,7 @@ public class MinionAI : MonoBehaviour
         {
             currentAction = Actions.wander;
             Debug.Log("current action: "+currentAction + " " + currentAction);
+            energyUsage = (maxHealth * speed)/1000;
         }
     }
 
@@ -63,6 +71,8 @@ public class MinionAI : MonoBehaviour
         //idle animation
         currentAction = Actions.undecided;
     }
+
+
     private void wandering()
     {
         if (agent.isStopped)
@@ -76,6 +86,8 @@ public class MinionAI : MonoBehaviour
         }
         if (!agent.pathPending)//boolean on whether it has a path to follow
         {
+            //use energy here
+            energy = energyUsage * Time.deltatime;
 
             if (agent.remainingDistance <= agent.stoppingDistance)//check to see if we should be stopped
             {
